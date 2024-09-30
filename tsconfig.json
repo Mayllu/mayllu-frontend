@@ -1,6 +1,18 @@
 {
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
-    "strict": true
-  }
+    "strict": true,
+    "types": ["nativewind/types"],
+    "baseUrl": "./",
+    "paths": {
+      "@/components/*": ["components/*"],
+      "@/screens/*": ["screens/*"],
+      "@/utils/*": ["utils/*"],
+      "@/assets/*": ["assets/*"],
+      "@/services/*": ["services/*"],
+      "@/hooks/*": ["hooks/*"],
+      "@/constants/*": ["constants/*"],
+      "@/types/*": ["types/*"],
+    }
+  },
 }
