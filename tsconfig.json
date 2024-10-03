@@ -3,8 +3,9 @@
   "compilerOptions": {
     "strict": true,
     "types": ["nativewind/types"],
-    "baseUrl": "./",
+    "baseUrl": ".",
     "paths": {
+      "@/*": ["./*"],
       "@/components/*": ["components/*"],
       "@/screens/*": ["screens/*"],
       "@/utils/*": ["utils/*"],
@@ -12,7 +13,7 @@
       "@/services/*": ["services/*"],
       "@/hooks/*": ["hooks/*"],
       "@/constants/*": ["constants/*"],
-      "@/types/*": ["types/*"],
+      "@/types/*": ["types/*"]
     }
-  },
+  }
 }

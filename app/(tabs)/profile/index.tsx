@@ -1,11 +1,3 @@
-import { View, Text } from "react-native";
-
-const ProfilePage = () => {
-  return (
-    <View>
-      <Text>Profile Page</Text>
-    </View>
-  )
-};
+import ProfilePage from "pages/ProfilePage";
 
 export default ProfilePage;

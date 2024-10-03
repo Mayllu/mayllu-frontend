@@ -4,20 +4,20 @@
     "slug": "mayllu-frontend",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/splash_mayllu.png",
     "userInterfaceStyle": "light",
     "scheme": "mayllu",
+    "primaryColor": "#0F67FE",
     "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "image": "./assets/splash_mayllu.png",
+      "backgroundColor": "#FFFFFF"
     },
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/splash_mayllu.png",
         "backgroundColor": "#ffffff"
       }
     },

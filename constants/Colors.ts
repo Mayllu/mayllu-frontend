@@ -1,24 +1,24 @@
 export const Colors = {
-  // Colores personalizados
-  pr_blue_1: "#006FFD",
-  bg_blue_1: "#001432",
+  blue_10: "#EDF5FF",
+  blue_20: "#D0E4FF",
+  blue_30: "#A6CBFF",
+  blue_40: "$78AEFF",
+  blue_50: "#458CFF",
+  blue_60: "#0F67FE",
+  blue_70: "#0048CE",
+  blue_80: "#00349C",
+  blue_90: "#002D6C",
+  blue_100: "#001141",
 
-  pr_white_1: "#FFFFFF",  // Blanco
-  pr_gray_1: "#F9FAFB",   // Gray 50
-  pr_gray_2: "#F3F4F6",   // Gray 100 -> background light
-  pr_gray_3: "#E5E7EB",   // Gray 200
-  pr_gray_4: "#D1D5DB",   // Gray 300
-  pr_gray_5: "#9CA3AF",   // Gray 400
-  pr_gray_6: "#6B7280",   // Gray 500
-  pr_gray_7: "#4B5563",   // Gray 600
-  pr_gray_8: "#374151",   // Gray 700
-  pr_gray_9: "#1F2937",   // Gray 800
-  pr_gray_10: "#111827", // Gray 900
-
-  pr_red_1: "#EF4444",    // Red 500
-  pr_yellow_1: "#F59E0B", // Yellow 500
-  pr_green_1: "#10B981",  // Green 500
-  pr_indigo_1: "#6366F1", // Indigo 500
-  pr_purple_1: "#8B5CF6", // Purple 500
-  pr_pink_1: "#EC4899",   // Pink 500
+  white_00: "#FFFFFF",
+  white_10: "#F2F5F9",
+  white_20: "#DCE1E8",
+  white_30: "#BEC5D2",
+  white_40: "#9EA7B8",
+  white_50: "#818BA0",
+  white_60: "#5D6A85",
+  white_70: "#3D4966",
+  white_80: "#242E49",
+  white_90: "#141B31",
+  white_100: "#090E1D",
 };

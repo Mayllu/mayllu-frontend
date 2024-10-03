@@ -1,11 +1,3 @@
-import { View, Text } from "react-native"
-
-const TakeReportPage = () => {
-  return (
-    <View>
-      <Text>TakeReport Page</Text>
-    </View>
-  )
-};
+import TakeReportPage from "pages/TakeReportPage";
 
 export default TakeReportPage;

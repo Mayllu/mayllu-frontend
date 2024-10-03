@@ -1,11 +1,3 @@
-import { View, Text } from "react-native";
-
-const HomePage = () => {
-  return (
-    <View>
-      <Text>Home Page</Text>
-    </View>
-  );
-};
+import HomePage from "pages/HomePage";
 
 export default HomePage;
