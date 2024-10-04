@@ -8,7 +8,7 @@ const HomePage = () => {
 
   return (
     <View style={pageStyle.container}>
-      <Text>Here Home Page</Text>
+      <Text>Pagina inicial</Text>
     </View>
   );
 };
