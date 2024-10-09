@@ -1,0 +1,10 @@
+services:
+  frontend:
+    build:
+      context: . # El contexto es el directorio actual, que contiene tu Dockerfile
+      dockerfile: Dockerfile # Dockerfile que usará para construir la imagen
+    ports:
+      - "8081:8081" # Puerto configurado en el archivo .env
+    volumes:
+      - .:/frontend # Monta el código fuente local en el contenedor
+    command: npx expo start # Comando para iniciar el backend en modo de desarrollo (con hot reload)
