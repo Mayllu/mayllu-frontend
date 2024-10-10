@@ -1,16 +1,18 @@
-on: push
 name: deploy
+
+on: push
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-    - name: build and push to docker
-      uses: docker/build-push-action@v1
-      with:
-        username: "lenin.chavez"
-        password: "password"
-        repository: ${{ github.repository }}
-        tag_with_ref: true
-        tag_with_sha: true
-        tags: ${{ github.sha }}
+      - uses: actions/checkout@v3  # Actualiza a la última versión
+      - name: Build and push to Docker
+        uses: docker/build-push-action@v3  # Actualiza a la última versión
+        with:
+          username: "lenin.chavez"  # Reemplaza con tu usuario de DockerHub
+          password: "password"  # Reemplaza con tu contraseña de DockerHub
+          push: true
+          tags: |
+            ${{ github.repository }}:latest
+            ${{ github.repository }}:${{ github.sha }}
