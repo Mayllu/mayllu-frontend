@@ -12,6 +12,9 @@ jobs:
   run-linters:
     name: Run linters
     runs-on: ubuntu-latest
+    permissions:
+      contents: read  # Permisos para leer el contenido del repositorio
+      checks: write    # Permisos para crear y actualizar checks
 
     steps:
       - name: Check out Git repository
@@ -20,9 +23,8 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: 18
+          node-version: 20
 
-      # Este paso instalará las dependencias desde package.json, incluyendo @expo-google-fonts/plus-jakarta-sans
       - name: Install Node.js dependencies
         run: npm ci
 
