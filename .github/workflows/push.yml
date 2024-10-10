@@ -10,8 +10,6 @@ jobs:
       - name: Build and push to Docker
         uses: docker/build-push-action@v3  
         with:
-          username: ""  
-          password: ""  
           push: true
           tags: |
             ${{ github.repository }}:latest
