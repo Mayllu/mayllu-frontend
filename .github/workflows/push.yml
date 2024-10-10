@@ -6,12 +6,12 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3  # Actualiza a la última versión
+      - uses: actions/checkout@v3  
       - name: Build and push to Docker
-        uses: docker/build-push-action@v3  # Actualiza a la última versión
+        uses: docker/build-push-action@v3  
         with:
-          username: "lenin.chavez"  # Reemplaza con tu usuario de DockerHub
-          password: "password"  # Reemplaza con tu contraseña de DockerHub
+          username: ""  
+          password: ""  
           push: true
           tags: |
             ${{ github.repository }}:latest
