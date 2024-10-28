@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
   time: {
     width: "100%",
     textAlign: "right",
-    fontFamily: "PlusJS_Medium",
+    fontFamily: "PlusJS_Regular",
     fontSize: 12,
     color: Colors.white_40,
   }

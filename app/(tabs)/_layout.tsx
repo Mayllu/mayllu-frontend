@@ -4,11 +4,11 @@ import { BackButton, CustomTabBarIcon, ProfileButton } from "@/components";
 
 const TabsLayout = () => {
   const navigation = useNavigation();
-
   return (
     <Tabs screenOptions={({route}) => ({
       tabBarStyle: {
         backgroundColor: 'transparent',
+        elevation: 0,
         borderTopWidth: 0,
         padding: 0,
         paddingTop: 20,
@@ -30,6 +30,13 @@ const TabsLayout = () => {
       <Tabs.Screen name="take-report/index" options={{ title: "Reportar", tabBarIcon: CustomTabBarIcon("camera", true) }} />
       <Tabs.Screen name="notifications/index" options={{ title: "Novedades", tabBarIcon: CustomTabBarIcon("notifications") }} />
       <Tabs.Screen name="profile/index" options={{ title: "Cuenta", tabBarIcon: CustomTabBarIcon("person") }} />
+      <Tabs.Screen 
+        name="complaint/[id]" 
+        options={{ 
+          href: null,
+          tabBarStyle: { display: 'none' }
+        }} 
+      />
     </Tabs>
   );
 }
