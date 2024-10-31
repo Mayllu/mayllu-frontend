@@ -1,2 +1,2 @@
-export * from './NotificationItem';
-export * from './ComplaintPoint';
+export * from "./NotificationItem";
+export * from "./ComplaintPoint";
