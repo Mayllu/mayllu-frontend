@@ -2,6 +2,7 @@ export interface ComplaintPointInterface {
   id: number;
   title: string;
   description: string;
+  imageUrl: string;
   ubication: {
     x: number;
     y: number;

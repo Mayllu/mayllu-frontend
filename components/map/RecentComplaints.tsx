@@ -70,7 +70,7 @@ export const RecentComplaints: React.FC<RecentComplaintsProps> = ({
     >
       <View style={styles.imageContainer}>
         <Image
-          source={{ uri: "https://i.ibb.co/Lt3t7Gb/pic1.jpg" }}
+          source={{ uri: item.imageUrl}}
           style={styles.image}
           resizeMode="cover"
         />

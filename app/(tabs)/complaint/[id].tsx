@@ -14,7 +14,7 @@ import { useLocalSearchParams, Stack, router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import Animated, { FadeIn } from "react-native-reanimated";
-import { fetchComplaints } from "@/api/complaints";
+import { complaintsApi } from '@/api/complaints';
 import { ComplaintPointInterface } from "@/types";
 
 const { width, height } = Dimensions.get("window");
@@ -28,7 +28,7 @@ const ComplaintDetailPage = () => {
 
   useEffect(() => {
     const loadComplaint = async () => {
-      const complaints = await fetchComplaints();
+      const complaints = await complaintsApi.getAll();
       const found = complaints.find((c) => c.id.toString() === id);
       setComplaint(found || null);
       setLoading(false);
@@ -55,7 +55,7 @@ const ComplaintDetailPage = () => {
 
       {/* Imagen de fondo */}
       <Image
-        source={{ uri: "https://i.ibb.co/Lt3t7Gb/pic1.jpg" }}
+        source={{ uri: complaint.imageUrl}}
         style={styles.backgroundImage}
         resizeMode="cover"
       />
