@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   sectionTitle: {
-    fontFamily: "PlusJS_ExtraBold",
+    fontFamily: "Inter_ExtraBold",
     fontSize: 20,
     fontWeight: "600",
     marginVertical: 10,
@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
   viewAll: {
     fontSize: 14,
     color: Colors.blue_60,
-    fontFamily: "PlusJS_SemiBold",
+    fontFamily: "Inter_SemiBold",
   },
   listContent: {
     padding: CARD_PADDING,
@@ -194,13 +194,13 @@ const styles = StyleSheet.create({
   },
   complaintTitle: {
     fontSize: 16,
-    fontFamily: "PlusJS_SemiBold",
+    fontFamily: "Inter_SemiBold",
     marginBottom: 4,
   },
   complaintDesc: {
     fontSize: 14,
     color: "#666",
-    fontFamily: "PlusJS_Regular",
+    fontFamily: "Inter_Regular",
     lineHeight: 20,
     marginBottom: 12,
   },
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#666",
     marginLeft: 4,
-    fontFamily: "PlusJS_Regular",
+    fontFamily: "Inter_Regular",
   },
   skeletonHeaderTitle: {
     width: 180,

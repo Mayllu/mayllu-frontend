@@ -1,6 +1,5 @@
 import { ComplaintPointInterface } from "@/types";
-
-const API_URL = "https://dd26-132-251-3-55.ngrok-free.app/api";
+import { API_URL } from "@/constants";
 
 export const complaintsApi = {
   getAll: async (): Promise<ComplaintPointInterface[]> => {

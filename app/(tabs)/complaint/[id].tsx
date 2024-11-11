@@ -1,4 +1,3 @@
-// app/(tabs)/complaint/[id].tsx
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -55,7 +54,7 @@ const ComplaintDetailPage = () => {
 
       {/* Imagen de fondo */}
       <Image
-        source={{ uri: complaint.imageUrl}}
+        source={{ uri: complaint.imageUrl }}
         style={styles.backgroundImage}
         resizeMode="cover"
       />
@@ -164,7 +163,6 @@ const styles = StyleSheet.create({
     zIndex: 2,
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 16,
   },
   backButton: {
     width: 40,
@@ -191,14 +189,12 @@ const styles = StyleSheet.create({
   },
   titleGradient: {
     padding: 20,
-    paddingTop: 20,
   },
   categoryBadge: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "rgba(255,255,255,0.2)",
     alignSelf: "flex-start",
-    paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 20,
     marginBottom: 12,
@@ -207,12 +203,12 @@ const styles = StyleSheet.create({
     color: "#FFF",
     marginLeft: 6,
     fontSize: 14,
-    fontFamily: "PlusJS_SemiBold",
+    fontFamily: "Inter_SemiBold",
   },
   title: {
     fontSize: 24,
     color: "#FFF",
-    fontFamily: "PlusJS_Bold",
+    fontFamily: "Inter_Bold",
     marginBottom: 8,
   },
   locationContainer: {
@@ -223,7 +219,7 @@ const styles = StyleSheet.create({
     color: "#FFF",
     marginLeft: 6,
     fontSize: 14,
-    fontFamily: "PlusJS_Regular",
+    fontFamily: "Inter_Regular",
     opacity: 0.9,
   },
   detailsCard: {
@@ -235,14 +231,14 @@ const styles = StyleSheet.create({
   descriptionTitle: {
     fontSize: 18,
     color: "#000",
-    fontFamily: "PlusJS_SemiBold",
+    fontFamily: "Inter_SemiBold",
     marginBottom: 12,
   },
   description: {
     fontSize: 16,
     color: "#666",
     lineHeight: 24,
-    fontFamily: "PlusJS_Regular",
+    fontFamily: "Inter_Regular",
   },
   actions: {
     flexDirection: "row",
@@ -256,13 +252,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 12,
   },
   actionText: {
     marginLeft: 8,
     fontSize: 15,
     color: "#666",
-    fontFamily: "PlusJS_Regular",
+    fontFamily: "Inter_Regular",
   },
   actionDivider: {
     width: 1,

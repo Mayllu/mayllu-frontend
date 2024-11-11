@@ -5,7 +5,7 @@ import { Colors } from '@/constants';
 
 const ProfileAvatar = () => (
   <Image
-    source={{ uri: 'https://randomuser.me/api/portraits/men/86.jpg' }}
+    source={{ uri: 'https://avatars.githubusercontent.com/u/118573214?v=4' }}
     style={styles.avatar}
   />
 );

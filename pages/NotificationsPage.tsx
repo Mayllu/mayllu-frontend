@@ -73,7 +73,7 @@ const NotificationsPage = () => {
 
 const styles = StyleSheet.create({
   header: {
-    fontFamily: "PlusJS_ExtraBold",
+    fontFamily: "Manrope_ExtraBold",
     fontSize: 20,
     fontWeight: '600',
     marginVertical: 10,

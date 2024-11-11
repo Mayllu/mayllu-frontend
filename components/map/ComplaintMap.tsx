@@ -1,6 +1,6 @@
 import * as Location from "expo-location";
 import React, { useRef, useEffect } from "react";
-import MapView, { PROVIDER_GOOGLE, Marker } from "react-native-maps";
+import MapView, { PROVIDER_GOOGLE, PROVIDER_DEFAULT, Marker } from "react-native-maps";
 import { Platform, StyleSheet, View } from "react-native";
 import { ComplaintPointInterface } from "@/types";
 import { Ionicons } from "@expo/vector-icons";
@@ -24,7 +24,7 @@ export const ComplaintMap: React.FC<ComplaintMapInterfaceProps> = ({
         {
           latitude: origin.coords.latitude,
           longitude: origin.coords.longitude,
-          latitudeDelta: 0.01, // Mucho más zoom
+          latitudeDelta: 0.01,
           longitudeDelta: 0.01,
         },
         1000
@@ -37,10 +37,7 @@ export const ComplaintMap: React.FC<ComplaintMapInterfaceProps> = ({
       <MapView
         ref={mapRef}
         style={styles.map}
-        provider={Platform.select({
-          android: PROVIDER_GOOGLE,
-          ios: undefined,
-        })}
+        provider={Platform.OS === "android" ? PROVIDER_GOOGLE : PROVIDER_DEFAULT}
         initialRegion={{
           latitude: -12.0630149,
           longitude: -77.0296179,
@@ -81,7 +78,7 @@ export const ComplaintMap: React.FC<ComplaintMapInterfaceProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    height: "40%", // Reducimos altura para dejar espacio a las publicaciones
+    height: "40%",
   },
   map: {
     width: "100%",

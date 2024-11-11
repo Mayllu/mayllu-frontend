@@ -55,13 +55,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    fontFamily: "PlusJS_ExtraBold",
+    fontFamily: "Manrope_ExtraBold",
     fontSize: 16,
     marginBottom: 4,
     color: Colors.white_80,
   },
   description: {
-    fontFamily: "PlusJS_SemiBold",
+    fontFamily: "Manrope_SemiBold",
     fontSize: 14,
     color: Colors.white_60,
     lineHeight: 20,
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
   time: {
     width: "100%",
     textAlign: "right",
-    fontFamily: "PlusJS_Regular",
+    fontFamily: "Manrope_Regular",
     fontSize: 12,
     color: Colors.white_40,
   }

@@ -2,9 +2,6 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
-    "types": [
-      "nativewind/types"
-    ],
     "baseUrl": ".",
     "paths": {
       "@/*": [
@@ -33,6 +30,9 @@
       ],
       "@/types/*": [
         "types/*"
+      ],
+      "œ/context/*": [
+        "context/*"
       ]
     }
   },

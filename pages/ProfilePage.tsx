@@ -1,12 +1,14 @@
 import React from 'react';
-import { StyleSheet, View, Text, Image, ScrollView, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text, Image, ScrollView, TouchableOpacity, Alert } from "react-native";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from "@/constants";
 import { CreatePageStyle } from "@/utils";
+import { useSession } from '@/context';
+import { useNavigation } from '@react-navigation/native';
 
-const ProfileOption = ({ icon, text, color = Colors.white_60 }) => (
-  <TouchableOpacity style={styles.option}>
+const ProfileOption = ({ icon, text, color = Colors.white_60, onPress }) => (
+  <TouchableOpacity style={styles.option} onPress={onPress}>
     <View style={[styles.iconContainer, { backgroundColor: color + '20' }]}>
       <Ionicons name={icon} size={20} color={color} />
     </View>
@@ -27,50 +29,120 @@ const ProfileSection = ({ title, options }) => (
 const ProfilePage = () => {
   const headerHeight = useHeaderHeight();
   const pageStyle = CreatePageStyle(headerHeight);
+  const { user, signOut } = useSession();
+  const navigation = useNavigation();
+
+  const handleLogout = async () => {
+    Alert.alert(
+      "Cerrar Sesión",
+      "¿Estás seguro que deseas cerrar sesión?",
+      [
+        {
+          text: "Cancelar",
+          style: "cancel"
+        },
+        {
+          text: "Sí, cerrar sesión",
+          onPress: async () => {
+            try {
+              await signOut();
+              navigation.reset({
+                index: 0,
+                routes: [{ name: 'Auth' }],
+              });
+            } catch (error) {
+              Alert.alert("Error", "No se pudo cerrar sesión. Intente nuevamente.");
+            }
+          }
+        }
+      ]
+    );
+  };
 
   const profileSections = [
     {
       title: "Ajustes",
       options: [
-        { icon: "person", text: "Editar Perfil" },
-        { icon: "notifications", text: "Notificaciones" },
-        { icon: "lock-closed", text: "Privacidad y Seguridad" },
+        { 
+          icon: "person", 
+          text: "Editar Perfil",
+          onPress: () => navigation.navigate('EditProfile')
+        },
+        { 
+          icon: "notifications", 
+          text: "Notificaciones",
+          onPress: () => navigation.navigate('Notifications')
+        },
+        { 
+          icon: "lock-closed", 
+          text: "Privacidad y Seguridad",
+          onPress: () => navigation.navigate('Privacy')
+        },
       ]
     },
     {
       title: "Preferencias",
       options: [
-        { icon: "moon", text: "Modo Oscuro" },
-        { icon: "language", text: "Idioma" },
-        { icon: "color-palette", text: "Tema" },
+        { 
+          icon: "moon", 
+          text: "Modo Oscuro",
+          onPress: () => navigation.navigate('DarkMode')
+        },
+        { 
+          icon: "language", 
+          text: "Idioma",
+          onPress: () => navigation.navigate('Language')
+        },
+        { 
+          icon: "color-palette", 
+          text: "Tema",
+          onPress: () => navigation.navigate('Theme')
+        },
       ]
     },
     {
       title: "Ayuda y Soporte",
       options: [
-        { icon: "information-circle", text: "Acerca de" },
-        { icon: "help-circle", text: "Centro de Ayuda" },
-        { icon: "mail", text: "Contáctanos" },
+        { 
+          icon: "information-circle", 
+          text: "Acerca de",
+          onPress: () => navigation.navigate('About')
+        },
+        { 
+          icon: "help-circle", 
+          text: "Centro de Ayuda",
+          onPress: () => navigation.navigate('Help')
+        },
+        { 
+          icon: "mail", 
+          text: "Contáctanos",
+          onPress: () => navigation.navigate('Contact')
+        },
       ]
     },
     {
       title: "Sesión",
       options: [
-        { icon: "log-out", text: "Cerrar Sesión", color: Colors.red_60 },
+        { 
+          icon: "log-out", 
+          text: "Cerrar Sesión", 
+          color: Colors.red_60,
+          onPress: handleLogout
+        },
       ]
     }
   ];
 
   return (
-    <ScrollView style={pageStyle.container}>
+    <ScrollView style={[pageStyle.container, styles.scrollView]} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
       <View style={styles.header}>
         <Image 
-          source={{uri: "https://randomuser.me/api/portraits/men/86.jpg"}} 
+          source={{ uri: "https://avatars.githubusercontent.com/u/118573214?v=4" }} 
           style={styles.avatar} 
         />
         <View style={styles.userData}>
-          <Text style={styles.name}>Carlos Balbuena</Text>
-          <Text style={styles.email}>carlos.balbuena@utec.edu.pe</Text>
+          <Text style={styles.name}>{user?.name || 'Usuario'}</Text>
+          <Text style={styles.email}>{user?.email}</Text>
           <View style={styles.badge}>
             <Text style={styles.badgeText}>Usuario Verificado</Text>
           </View>
@@ -100,6 +172,14 @@ const ProfilePage = () => {
 };
 
 const styles = StyleSheet.create({
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    paddingBottom: 150,
+    paddingHorizontal: 10,
+  },
   header: {
     flexDirection: "row",
     alignItems: "center",
@@ -119,13 +199,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   name: {
-    fontFamily: "PlusJS_ExtraBold",
+    fontFamily: "Inter_Regular",
     color: Colors.white_80,
     fontSize: 20,
     marginBottom: 5,
   },
   email: {
-    fontFamily: "PlusJS_Regular",
+    fontFamily: "Inter_Regular",
     color: Colors.white_60,
     fontSize: 14,
     marginBottom: 5,
@@ -140,7 +220,7 @@ const styles = StyleSheet.create({
   },
   badgeText: {
     color: Colors.blue_60,
-    fontFamily: "PlusJS_SemiBold",
+    fontFamily: "Inter_Regular",
     fontSize: 11,
   },
   statsContainer: {
@@ -157,12 +237,12 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   statNumber: {
-    fontFamily: "PlusJS_ExtraBold",
+    fontFamily: "Inter_SemiBold",
     color: Colors.white_80,
     fontSize: 20,
   },
   statLabel: {
-    fontFamily: "PlusJS_Regular",
+    fontFamily: "Inter_Regular",
     color: Colors.white_60,
     fontSize: 14,
   },
@@ -170,7 +250,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   sectionTitle: {
-    fontFamily: "PlusJS_ExtraBold",
+    fontFamily: "Inter_Semibold",
     color: Colors.white_80,
     fontSize: 18,
     marginBottom: 15,
@@ -191,7 +271,7 @@ const styles = StyleSheet.create({
   },
   optionText: {
     flex: 1,
-    fontFamily: "PlusJS_SemiBold",
+    fontFamily: "Inter_Regular",
     color: Colors.white_80,
     fontSize: 16,
   },

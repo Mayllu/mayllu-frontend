@@ -24,13 +24,11 @@ const HomePage = () => {
       setComplaints(complaintsData);
     } catch (error) {
       console.error("Error loading complaints:", error);
-      // Aquí podrías manejar el error, por ejemplo mostrar un mensaje al usuario
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Obtener permisos de ubicación solo una vez al montar el componente
   useEffect(() => {
     const getPermissions = async () => {
       try {
@@ -49,12 +47,10 @@ const HomePage = () => {
     getPermissions();
   }, []);
 
-  // Cargar quejas cada vez que la pantalla recibe el foco
   useFocusEffect(
     useCallback(() => {
       loadComplaints();
       
-      // Opcional: actualizar la ubicación cada vez que se enfoca la pantalla
       const updateLocation = async () => {
         try {
           let currentOrigin = await Location.getCurrentPositionAsync({});
