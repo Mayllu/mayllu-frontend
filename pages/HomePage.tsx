@@ -1,6 +1,6 @@
-import { useFocusEffect } from '@react-navigation/native';
-import { useCallback } from 'react';
 import * as Location from "expo-location";
+import { useFocusEffect } from "@react-navigation/native";
+import { useCallback } from "react";
 import { useEffect, useState } from "react";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { View } from "react-native";
@@ -8,12 +8,13 @@ import { CreatePageStyle } from "@/utils";
 import { ComplaintMap } from "@/components";
 import { ComplaintPointInterface } from "@/types";
 import { RecentComplaints } from "@/components";
-import { complaintsApi } from '@/api/complaints';
+import { complaintsApi } from "@/api/complaints";
 
 const HomePage = () => {
   const headerHeight = useHeaderHeight();
   const pageStyle = CreatePageStyle(headerHeight);
-  const [originLocation, setOriginLocation] = useState<Location.LocationObject | null>(null);
+  const [originLocation, setOriginLocation] =
+    useState<Location.LocationObject | null>(null);
   const [complaints, setComplaints] = useState<ComplaintPointInterface[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -23,7 +24,7 @@ const HomePage = () => {
       const complaintsData = await complaintsApi.getAll();
       setComplaints(complaintsData);
     } catch (error) {
-      console.error("Error loading complaints:", error);
+      console.error("Error loading complaints xd", error);
     } finally {
       setIsLoading(false);
     }
@@ -34,13 +35,13 @@ const HomePage = () => {
       try {
         let { status } = await Location.requestForegroundPermissionsAsync();
         if (status !== "granted") {
-          alert("Permission to access location was denied");
+          alert("No se proporcionó acceso a la ubicación");
           return;
         }
         let currentOrigin = await Location.getCurrentPositionAsync({});
         setOriginLocation(currentOrigin);
       } catch (error) {
-        console.error("Error getting location:", error);
+        console.error("Error obteniendo la ubicación:", error);
       }
     };
 
@@ -50,7 +51,7 @@ const HomePage = () => {
   useFocusEffect(
     useCallback(() => {
       loadComplaints();
-      
+
       const updateLocation = async () => {
         try {
           let currentOrigin = await Location.getCurrentPositionAsync({});
@@ -59,7 +60,7 @@ const HomePage = () => {
           console.error("Error updating location:", error);
         }
       };
-      
+
       updateLocation();
     }, [])
   );

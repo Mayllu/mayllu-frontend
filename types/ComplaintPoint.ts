@@ -1,4 +1,5 @@
 export interface ComplaintPointInterface {
+  createdAt: string;
   id: number;
   title: string;
   description: string;
@@ -7,8 +8,6 @@ export interface ComplaintPointInterface {
     x: number;
     y: number;
   };
-  created_at: string;
-  updated_at: string;
   user: {
     dni: string;
     name: string;
@@ -27,7 +26,7 @@ export interface ComplaintPointInterface {
   district: {
     name: string;
   };
-  complaints_image: any[]; // Puedes especificar el tipo si tienes más detalles de esta estructura
-  comments: any[]; // Igualmente, ajusta si tienes el tipo específico
-  complaintState: any[]; // Ajusta según el tipo específico de los estados de queja
+  complaints_image: any[];
+  comments: any[];
+  complaintState: any[];
 }

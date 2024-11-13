@@ -1,14 +1,27 @@
 import * as Location from "expo-location";
-import React, { useRef, useEffect } from "react";
-import MapView, { PROVIDER_GOOGLE, PROVIDER_DEFAULT, Marker } from "react-native-maps";
-import { Platform, StyleSheet, View } from "react-native";
-import { ComplaintPointInterface } from "@/types";
-import { Ionicons } from "@expo/vector-icons";
+import React, { useRef, useEffect, useState } from "react";
+import MapView, { PROVIDER_GOOGLE, Marker } from "react-native-maps";
+import {
+  StyleSheet,
+  View,
+  Text,
+  Modal,
+  FlatList,
+  TouchableOpacity,
+  Platform,
+} from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { ComplaintPointInterface } from "@/types";
 import { customMapStyle } from "@/utils";
+import { Colors } from "@/constants";
 
-interface ComplaintMapInterfaceProps {
-  origin: Location.LocationObject | null;
+interface LocationGroup {
+  key: string;
+  coordinate: {
+    latitude: number;
+    longitude: number;
+  };
   complaints: ComplaintPointInterface[];
 }
 
@@ -17,6 +30,56 @@ export const ComplaintMap: React.FC<ComplaintMapInterfaceProps> = ({
   complaints,
 }) => {
   const mapRef = useRef<MapView>(null);
+  const [groupedComplaints, setGroupedComplaints] = useState<LocationGroup[]>(
+    []
+  );
+  const [selectedGroup, setSelectedGroup] = useState<LocationGroup | null>(
+    null
+  );
+  const [showModal, setShowModal] = useState(false);
+
+  const parseLocation = (ubicationString: string) => {
+    try {
+      const coords = ubicationString
+        .replace("(", "")
+        .replace(")", "")
+        .split(",")
+        .map((coord) => parseFloat(coord.trim()));
+
+      if (coords.length === 2 && !isNaN(coords[0]) && !isNaN(coords[1])) {
+        return {
+          latitude: coords[0],
+          longitude: coords[1],
+        };
+      }
+      return null;
+    } catch (error) {
+      console.error("Error parsing location:", error);
+      return null;
+    }
+  };
+
+  const groupComplaintsByLocation = () => {
+    const groups: { [key: string]: LocationGroup } = {};
+
+    complaints.forEach((complaint) => {
+      const location = parseLocation(complaint.ubication);
+      if (!location) return;
+
+      const key = `${location.latitude},${location.longitude}`;
+
+      if (!groups[key]) {
+        groups[key] = {
+          key,
+          coordinate: location,
+          complaints: [],
+        };
+      }
+      groups[key].complaints.push(complaint);
+    });
+
+    setGroupedComplaints(Object.values(groups));
+  };
 
   useEffect(() => {
     if (origin && mapRef.current) {
@@ -24,54 +87,180 @@ export const ComplaintMap: React.FC<ComplaintMapInterfaceProps> = ({
         {
           latitude: origin.coords.latitude,
           longitude: origin.coords.longitude,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
+          latitudeDelta: 0.0,
+          longitudeDelta: 0.006,
         },
         1000
       );
     }
   }, [origin]);
 
+  useEffect(() => {
+    groupComplaintsByLocation();
+  }, [complaints]);
+
+  const handleMarkerPress = (group: LocationGroup) => {
+    if (group.complaints.length === 1) {
+      router.push({
+        pathname: "/complaint/[id]",
+        params: { id: group.complaints[0].id },
+      });
+    } else {
+      setSelectedGroup(group);
+      setShowModal(true);
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <MapView
-        ref={mapRef}
-        style={styles.map}
-        provider={Platform.OS === "android" ? PROVIDER_GOOGLE : PROVIDER_DEFAULT}
-        initialRegion={{
-          latitude: -12.0630149,
-          longitude: -77.0296179,
-          latitudeDelta: 0.003,
-          longitudeDelta: 0.003,
-        }}
-        showsUserLocation={true}
-        showsMyLocationButton={true}
-        mapPadding={{ top: 0, right: 0, bottom: 0, left: 0 }}
-        customMapStyle={customMapStyle}
-      >
-        {complaints.map((complaint, index) => (
-          <Marker
-            key={index}
-            coordinate={{
-              latitude: complaint.ubication.x,
-              longitude: complaint.ubication.y,
-            }}
-            onPress={() =>
-              router.push({
-                pathname: "/complaint/[id]",
-                params: { id: complaint.id.toString() },
-              })
-            }
-          >
-            <View style={styles.markerContainer}>
-              <View style={styles.markerIcon}>
-                <Ionicons name="warning" size={18} color="#FFFFFF" />
+      <View style={styles.mapWrapper}>
+        <MapView
+          ref={mapRef}
+          style={styles.map}
+          provider={PROVIDER_GOOGLE}
+          initialRegion={{
+            latitude: -12.0630149,
+            longitude: -77.0296179,
+            latitudeDelta: 0.02,
+            longitudeDelta: 0.02,
+          }}
+          showsUserLocation={true}
+          showsMyLocationButton={false}
+          showsBuildings={false}
+          showsTraffic={false}
+          showsIndoors={false}
+          pitchEnabled={false}
+          scrollEnabled={true}
+          rotateEnabled={false}
+          mapPadding={{ top: 0, right: 0, bottom: 0, left: 0 }}
+          customMapStyle={customMapStyle}
+          toolbarEnabled={false} // Añadir esta línea
+          moveOnMarkerPress={false} // Añadir esta línea
+          liteMode={false} // Añadir esta línea
+          loadingEnabled={true} // Añadir esta línea
+          loadingBackgroundColor={Colors.white_10} // Añadir esta línea
+        >
+          {groupedComplaints.map((group) => (
+            <Marker
+              key={group.key}
+              coordinate={group.coordinate}
+              onPress={() => handleMarkerPress(group)}
+            >
+              <View style={styles.markerContainer}>
+                <View
+                  style={[
+                    styles.markerIcon,
+                    {
+                      backgroundColor:
+                        group.complaints[0].category.color || Colors.blue_60,
+                    },
+                  ]}
+                >
+                  <MaterialIcons
+                    name={
+                      (group.complaints[0].category.icon as any) || "warning"
+                    }
+                    size={20} // Ajustado para el nuevo tamaño
+                    color="#FFFFFF"
+                  />
+                  {group.complaints.length > 1 && (
+                    <View style={styles.badge}>
+                      <Text style={styles.badgeText}>
+                        {group.complaints.length}
+                      </Text>
+                    </View>
+                  )}
+                </View>
+                <View
+                  style={[
+                    styles.markerTriangle,
+                    {
+                      borderTopColor:
+                        group.complaints[0].category.color || Colors.blue_60,
+                    },
+                  ]}
+                />
               </View>
-              <View style={styles.markerTriangle} />
+            </Marker>
+          ))}
+        </MapView>
+        <TouchableOpacity
+          style={styles.locationButton}
+          onPress={() => {
+            if (origin && mapRef.current) {
+              mapRef.current.animateToRegion(
+                {
+                  latitude: origin.coords.latitude,
+                  longitude: origin.coords.longitude,
+                  latitudeDelta: 0.01,
+                  longitudeDelta: 0.01,
+                },
+                1000
+              );
+            }
+          }}
+        >
+          <View style={styles.locationButtonInner}>
+            <MaterialIcons
+              name="my-location"
+              size={22}
+              color={Colors.blue_60}
+            />
+          </View>
+        </TouchableOpacity>
+      </View>
+
+      {/* Modal para mostrar múltiples reportes en la misma ubicación */}
+      <Modal
+        visible={showModal}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setShowModal(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>
+                {selectedGroup?.complaints.length} reportes en esta ubicación
+              </Text>
+              <TouchableOpacity
+                onPress={() => setShowModal(false)}
+                style={styles.closeButton}
+              >
+                <MaterialIcons name="close" size={24} color={"#ff3030"} />
+              </TouchableOpacity>
             </View>
-          </Marker>
-        ))}
-      </MapView>
+            <FlatList
+              data={selectedGroup?.complaints}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={styles.complaintItem}
+                  onPress={() => {
+                    setShowModal(false);
+                    router.push("complaint", { id: item._id });
+                  }}
+                >
+                  <View style={styles.complaintItemHeader}>
+                    <View
+                      style={[
+                        styles.categoryDot,
+                        { backgroundColor: item.category.color },
+                      ]}
+                    />
+                    <Text style={styles.complaintTitle}>{item.title}</Text>
+                  </View>
+                  <MaterialIcons
+                    name="chevron-right"
+                    size={24}
+                    color={Colors.grey}
+                  />
+                </TouchableOpacity>
+              )}
+            />
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -80,18 +269,31 @@ const styles = StyleSheet.create({
   container: {
     height: "40%",
   },
+  mapWrapper: {
+    flex: 1,
+    borderRadius: 12,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: Colors.white_40,
+    position: "relative", // Asegura que el botón se posicione correctamente
+  },
+  mapContainer: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 12,
+  },
   map: {
     width: "100%",
-    height: "100%",
+    height: "120%", // Esto es crucial para ocultar el logo
+    marginBottom: -50, // Esto también es crucial
   },
   markerContainer: {
     alignItems: "center",
+    position: "relative", // Asegura que el posicionamiento sea relativo al contenedor
   },
   markerIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: "#FF4B4B",
+    width: 40, // Incrementado ligeramente para acomodar el badge
+    height: 40,
+    borderRadius: 20,
     borderWidth: 2,
     borderColor: "#FFFFFF",
     alignItems: "center",
@@ -101,6 +303,28 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+    position: "relative", // Para el posicionamiento del badge
+  },
+  badge: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    backgroundColor: "#ff3030",
+    borderRadius: 8,
+    minWidth: 16,
+    height: 16,
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "#FFFFFF",
+    paddingHorizontal: 2,
+    transform: [{ translateX: 2 }, { translateY: -2 }], // Ajuste fino de la posición
+  },
+  badgeText: {
+    color: "#FFFFFF",
+    fontSize: 10,
+    fontWeight: "bold",
+    textAlign: "center",
   },
   markerTriangle: {
     width: 0,
@@ -112,7 +336,76 @@ const styles = StyleSheet.create({
     borderTopWidth: 12,
     borderLeftColor: "transparent",
     borderRightColor: "transparent",
-    borderTopColor: "#FF4B4B",
     marginTop: -2,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "flex-end",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
+    backgroundColor: Colors.white,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 16,
+    maxHeight: "70%",
+  },
+  modalHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 16,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#000000",
+  },
+  closeButton: {
+    padding: 4,
+  },
+  complaintItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ff3030",
+  },
+  complaintItemHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    flex: 1,
+  },
+  categoryDot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    marginRight: 8,
+  },
+  complaintTitle: {
+    fontSize: 16,
+    color: Colors.black,
+    flex: 1,
+  },
+  locationButton: {
+    position: "absolute",
+    bottom: 16,
+    right: 16,
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    backgroundColor: Colors.white_00,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  locationButtonInner: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 8,
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: Colors.white_40,
   },
 });

@@ -1,4 +1,3 @@
-// app/auth/login.tsx
 import { View, Text, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 import { Href, Link, router } from 'expo-router';
 import { WaveBackground } from '@/components';

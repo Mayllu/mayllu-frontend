@@ -250,7 +250,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   sectionTitle: {
-    fontFamily: "Inter_Semibold",
     color: Colors.white_80,
     fontSize: 18,
     marginBottom: 15,

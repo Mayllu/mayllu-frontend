@@ -5,103 +5,89 @@ import {
   FlatList,
   TouchableOpacity,
   StyleSheet,
-  Image,
   Dimensions,
+  Image,
 } from "react-native";
 import { ComplaintPointInterface } from "@/types";
 import { router } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
-import { ComplaintSkeleton } from "./ComplaintSkeleton";
+import { MaterialIcons } from "@expo/vector-icons";
 import { Colors } from "@/constants";
+import { formatTimeAgo } from "@/utils";
+import { ComplaintSkeleton } from "./ComplaintSkeleton";
 
 const { width } = Dimensions.get("window");
 const CARD_PADDING = 0;
-const CARD_MARGIN = 8;
-const CARD_WIDTH = width - CARD_PADDING * 2;
+const CARD_HEIGHT = 110;
 
 interface RecentComplaintsProps {
   complaints: ComplaintPointInterface[];
   isLoading?: boolean;
 }
 
-const getCategoryIcon = (categoryId: number) => {
-  switch (categoryId) {
-    case 1:
-      return "construct";
-    case 2:
-      return "car";
-    case 3:
-      return "warning";
-    case 4:
-      return "people";
-    default:
-      return "alert-circle";
-  }
-};
-
-const getCategoryColor = (categoryId: number) => {
-  switch (categoryId) {
-    case 1:
-      return "#FF4B4B";
-    case 2:
-      return "#4B7BFF";
-    case 3:
-      return "#FFB74B";
-    case 4:
-      return "#4BFF4B";
-    default:
-      return "#808080";
-  }
-};
-
 export const RecentComplaints: React.FC<RecentComplaintsProps> = ({
   complaints,
   isLoading = false,
 }) => {
-  const renderItem = ({ item }: { item: ComplaintPointInterface }) => (
-    <TouchableOpacity
-      style={styles.complaintItem}
-      onPress={() =>
-        router.push({
-          pathname: "/complaint/[id]",
-          params: { id: item.id },
-        })
-      }
-    >
-      <View style={styles.imageContainer}>
-        <Image
-          source={{ uri: item.imageUrl}}
-          style={styles.image}
-          resizeMode="cover"
-        />
-        <View
-          style={[
-            styles.categoryBadge,
-            { backgroundColor: getCategoryColor(item.category.id) },
-          ]}
-        >
-          <Ionicons
-            name={getCategoryIcon(item.category.id)}
-            size={16}
-            color="white"
+  const renderItem = ({ item }: { item: ComplaintPointInterface }) => {
+    return (
+      <TouchableOpacity
+        style={styles.complaintItem}
+        onPress={() => router.push(`/complaint/${item._id}`)}
+      >
+        {/* container with image section */}
+        <View style={styles.imageSection}>
+          <Image
+            source={{ uri: item.imageUrl }}
+            style={styles.thumbnailImage}
+            resizeMode="cover"
           />
+          <View
+            style={[
+              styles.categoryIcon,
+              { backgroundColor: item.category.color || Colors.white_80 },
+            ]}
+          >
+            <MaterialIcons
+              name={item.category.icon || "alert-circle"}
+              size={20}
+              color={Colors.white_00}
+            />
+          </View>
         </View>
-      </View>
-      <View style={styles.contentContainer}>
-        <Text style={styles.complaintTitle} numberOfLines={1}>
-          {item.title}
-        </Text>
-        <Text style={styles.complaintDesc} numberOfLines={2}>
-          {item.description}
-        </Text>
-        <View style={styles.footer}>
-          <Ionicons name="location" size={14} color="#666" />
-          <Text style={styles.location}>{item.district.name}</Text>
-        </View>
-      </View>
-    </TouchableOpacity>
-  );
 
+        {/* report content */}
+        <View style={styles.contentContainer}>
+          <Text style={styles.complaintTitle} numberOfLines={1}>
+            {item.title}
+          </Text>
+
+          <View style={styles.locationContainer}>
+            <MaterialIcons
+              name="location-on"
+              size={15}
+              color={Colors.white_60}
+            />
+            <Text style={styles.locationText}>{item.district.name}</Text>
+          </View>
+
+          <View style={styles.timeContainer}>
+            <MaterialIcons
+              name="access-time"
+              size={15}
+              color={Colors.white_60}
+            />
+            <Text style={styles.timeText}>
+              Hace {formatTimeAgo(item.createdAt)}
+            </Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
+  {
+    /* skeleton if  is loading */
+  }
   if (isLoading) {
     return (
       <View style={styles.container}>
@@ -119,15 +105,20 @@ export const RecentComplaints: React.FC<RecentComplaintsProps> = ({
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.sectionTitle}>Últimas Publicaciones</Text>
-        <TouchableOpacity>
-          <Text style={styles.viewAll}>Ver todas</Text>
+        <Text style={styles.sectionTitle}>Reportes Recientes</Text>
+        <TouchableOpacity style={styles.viewAllButton}>
+          <Text style={styles.viewAll}>Ver todos</Text>
+          <MaterialIcons
+            name="arrow-forward"
+            size={16}
+            color={Colors.blue_60}
+          />
         </TouchableOpacity>
       </View>
       <FlatList
         data={complaints}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item: any) => item.id}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.listContent}
       />
@@ -146,84 +137,108 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: CARD_PADDING,
-    marginBottom: 12,
+    marginBottom: 16,
   },
   sectionTitle: {
-    fontFamily: "Inter_ExtraBold",
-    fontSize: 20,
-    fontWeight: "600",
-    marginVertical: 10,
+    fontSize: 18,
+    fontFamily: "Inter_SemiBold",
     color: Colors.white_80,
+    marginTop: 10,
+  },
+  viewAllButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    marginTop: 10,
   },
   viewAll: {
     fontSize: 14,
     color: Colors.blue_60,
-    fontFamily: "Inter_SemiBold",
+    fontFamily: "Inter_Regular",
   },
   listContent: {
     padding: CARD_PADDING,
   },
   complaintItem: {
-    backgroundColor: "#ffffff",
-    borderRadius: 8,
-    marginBottom: CARD_MARGIN,
+    flexDirection: "row",
+    backgroundColor: Colors.white_00,
+    borderRadius: 12,
+    marginBottom: 12,
     overflow: "hidden",
+    height: CARD_HEIGHT,
     borderWidth: 1,
-    borderColor: "#f0f0f0",
+    borderColor: Colors.white_40,
   },
-  imageContainer: {
-    width: CARD_WIDTH,
-    height: 160,
+  imageSection: {
+    width: CARD_HEIGHT,
+    height: CARD_HEIGHT,
     position: "relative",
   },
-  image: {
+  thumbnailImage: {
     width: "100%",
     height: "100%",
   },
-  categoryBadge: {
+  categoryIcon: {
     position: "absolute",
-    top: 12,
-    right: 12,
-    padding: 8,
+    top: 8,
+    left: 8,
+    width: 28,
+    height: 28,
     borderRadius: 6,
     alignItems: "center",
     justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   contentContainer: {
-    padding: 16,
+    flex: 1,
+    padding: 12,
+    justifyContent: "center",
+    gap: 4,
   },
   complaintTitle: {
-    fontSize: 16,
+    fontSize: 15,
     fontFamily: "Inter_SemiBold",
-    marginBottom: 4,
+    color: Colors.white_80,
+    marginBottom: 2,
   },
-  complaintDesc: {
-    fontSize: 14,
-    color: "#666",
-    fontFamily: "Inter_Regular",
-    lineHeight: 20,
-    marginBottom: 12,
-  },
-  footer: {
+  locationContainer: {
+    marginTop: 8,
     flexDirection: "row",
     alignItems: "center",
+    gap: 4,
   },
-  location: {
-    fontSize: 12,
-    color: "#666",
-    marginLeft: 4,
+  locationText: {
+    fontSize: 13,
+    color: Colors.white_60,
+    fontFamily: "Inter_Regular",
+  },
+  timeContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
+  timeText: {
+    fontSize: 13,
+    color: Colors.white_60,
     fontFamily: "Inter_Regular",
   },
   skeletonHeaderTitle: {
     width: 180,
     height: 24,
-    backgroundColor: "#f0f0f0",
+    backgroundColor: Colors.white_10,
     borderRadius: 4,
   },
   skeletonHeaderButton: {
     width: 70,
     height: 20,
-    backgroundColor: "#f0f0f0",
+    backgroundColor: Colors.white_10,
     borderRadius: 4,
   },
 });

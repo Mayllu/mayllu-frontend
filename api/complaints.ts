@@ -37,5 +37,26 @@ export const complaintsApi = {
       console.error("Error creating complaint:", error);
       throw error;
     }
-  }
+  },
+
+
+  findOne: async (id: string): Promise<ComplaintPointInterface> => {
+    try {
+      const response = await fetch(`${API_URL}/complaints/${id}`);
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.message || 'Error fetching complaint');
+      }
+
+      if (!data) {
+        throw new Error('Complaint not found');
+      }
+
+      return data;
+    } catch (error) {
+      console.error("Error fetching complaint:", error);
+      throw error;
+    }
+  },
 };

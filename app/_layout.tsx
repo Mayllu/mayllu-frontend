@@ -1,4 +1,3 @@
-// app/_layout.tsx
 import * as SplashScreen from 'expo-splash-screen';
 import { View } from 'react-native';
 import { Slot } from 'expo-router';
@@ -38,4 +37,4 @@ export default function RootLayout() {
       </View>
     </SessionProvider>
   );
-}
+};

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -11,75 +11,70 @@ import {
   Platform,
   KeyboardAvoidingView,
   Alert,
-  Dimensions
-} from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
-import * as Location from 'expo-location';
+  Dimensions,
+} from "react-native";
+import * as ImagePicker from "expo-image-picker";
+import * as Location from "expo-location";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { CreatePageStyle } from "@/utils";
-import { complaintsApi } from '@/api/complaints';
-import { MaterialIcons } from '@expo/vector-icons';
-import { BlurView } from 'expo-blur';
-import { useSession } from '@/context';
+import { complaintsApi } from "@/api/complaints";
+import { MaterialIcons } from "@expo/vector-icons";
+import { BlurView } from "expo-blur";
+import { useSession } from "@/context";
 
-const SCREEN_WIDTH = Dimensions.get('window').width;
+const SCREEN_WIDTH = Dimensions.get("window").width;
 
 const COLORS = {
-  primary: '#1B3045',
-  secondary: '#2196F3',
-  accent: '#4CAF50',
-  background: '#F8F9FA',
-  surface: '#FFFFFF',
-  text: '#1B3045',
-  error: '#DC3545',
-  placeholderText: '#6C757D',
-  disabled: '#E9ECEF',
-  success: '#28a745'
+  primary: "#1B3045",
+  secondary: "#2196F3",
+  accent: "#4CAF50",
+  background: "#F8F9FA",
+  surface: "#FFFFFF",
+  text: "#1B3045",
+  error: "#DC3545",
+  placeholderText: "#6C757D",
+  disabled: "#E9ECEF",
+  success: "#28a745",
 };
 
 const CATEGORIES = [
   {
-    id: '672ab1fcebeba5376101c24a',
-    name: 'Alumbrado',
-    icon: 'lightbulb',
-    color: '#FFA726',
-    description: 'Problemas de alumbrado público'
+    name: "Alumbrado Público",
+    icon: "lightbulb",
+    color: "#FFA726",
+    description: "Problemas de alumbrado público",
   },
   {
-    id: '672ab1fcebeba5376101c24b',
-    name: 'Basura',
-    icon: 'delete',
-    color: '#66BB6A',
-    description: 'Problemas de residuos y limpieza'
+    _id: "672ab1fcebeba5376101c24b",
+    name: "Residuos",
+    icon: "delete",
+    color: "#26A69A",
+    description: "Problemas de residuos y limpieza",
   },
   {
-    id: '672ab1fcebeba5376101c24c',
-    name: 'Calles',
-    icon: 'road',
-    color: '#42A5F5',
-    description: 'Problemas en vías públicas'
+    name: "Calles",
+    icon: "road",
+    color: "#42A5F5",
+    description: "Problemas en vías públicas",
   },
   {
-    id: '672ab1fcebeba5376101c24d',
-    name: 'Seguridad',
-    icon: 'security',
-    color: '#EF5350',
-    description: 'Problemas de seguridad'
+    name: "Seguridad",
+    icon: "security",
+    color: "#EF5350",
+    description: "Problemas de seguridad",
   },
   {
-    id: '672ab1fcebeba5376101c24e',
-    name: 'Parques',
-    icon: 'park',
-    color: '#26A69A',
-    description: 'Problemas en áreas públicas'
+    name: "Parques",
+    icon: "park",
+    color: "#66BB6A",
+    description: "Problemas en áreas públicas",
   },
   {
-    id: '672ab1fcebeba5376101c24f',
-    name: 'Otros',
-    icon: 'more-horiz',
-    color: '#78909C',
-    description: 'Otros problemas'
-  }
+    name: "Otros",
+    icon: "more-horiz",
+    color: "#78909C",
+    description: "Otros problemas",
+  },
 ];
 
 const TakeReportPage = () => {
@@ -88,19 +83,55 @@ const TakeReportPage = () => {
   const { user } = useSession();
 
   const [photo, setPhoto] = useState(null);
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [location, setLocation] = useState(null);
+  const [locationError, setLocationError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [step, setStep] = useState(1); // 1: Categoría, 2: Foto, 3: Detalles
 
+  useEffect(() => {
+    (async () => {
+      try {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== "granted") {
+          setLocationError("Permission to access location was denied");
+          return;
+        }
+
+        const locationSubscription = await Location.watchPositionAsync(
+          {
+            accuracy: Location.Accuracy.High,
+            timeInterval: 10000,
+            distanceInterval: 10,
+          },
+          (newLocation) => {
+            setLocation(newLocation);
+            setLocationError("");
+          }
+        );
+
+        return () => {
+          if (locationSubscription) {
+            locationSubscription.remove();
+          }
+        };
+      } catch (err) {
+        setLocationError("Error getting location");
+        console.error("Location error:", err);
+      }
+    })();
+  }, []);
+
   const selectImage = async () => {
     try {
-      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== 'granted') {
-        Alert.alert('Error', 'Se necesita acceso a la galería');
+      const { status } =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert("Error", "Se necesita acceso a la galería");
         return;
       }
 
@@ -113,18 +144,18 @@ const TakeReportPage = () => {
 
       if (!result.canceled) {
         setPhoto(result.assets[0]);
-        setErrorMessage('');
+        setErrorMessage("");
       }
     } catch (error) {
-      setErrorMessage('Error al seleccionar la imagen');
+      setErrorMessage("Error al seleccionar la imagen");
     }
   };
 
   const takePhoto = async () => {
     try {
       const { status } = await ImagePicker.requestCameraPermissionsAsync();
-      if (status !== 'granted') {
-        Alert.alert('Error', 'Se necesitan permisos de cámara');
+      if (status !== "granted") {
+        Alert.alert("Error", "Se necesitan permisos de cámara");
         return;
       }
 
@@ -137,32 +168,36 @@ const TakeReportPage = () => {
 
       if (!result.canceled) {
         setPhoto(result.assets[0]);
-        setErrorMessage('');
+        setErrorMessage("");
       }
     } catch (error) {
-      setErrorMessage('Error al tomar la foto');
+      setErrorMessage("Error al tomar la foto");
     }
   };
 
   const validateForm = () => {
-    if (!selectedCategory) {
-      setErrorMessage('Seleccione una categoría del problema');
+    if (!selectedCategory || !selectedCategory.name) {
+      setErrorMessage("Seleccione una categoría del problema");
       setStep(1);
       return false;
     }
     if (!photo) {
-      setErrorMessage('Tome o seleccione una foto del problema');
+      setErrorMessage("Tome o seleccione una foto del problema");
       setStep(2);
       return false;
     }
     if (!title.trim()) {
-      setErrorMessage('Escriba un título breve del problema');
+      setErrorMessage("Escriba un título breve del problema");
       setStep(3);
       return false;
     }
     if (!description.trim()) {
-      setErrorMessage('Describa el problema con más detalle');
+      setErrorMessage("Describa el problema con más detalle");
       setStep(3);
+      return false;
+    }
+    if (!location || !location.coords) {
+      setErrorMessage("Esperando obtener su ubicación...");
       return false;
     }
     return true;
@@ -173,51 +208,36 @@ const TakeReportPage = () => {
 
     try {
       setIsSubmitting(true);
-      setErrorMessage('');
+      setErrorMessage("");
 
-      console.log('User context:', user);
-
-      // Verificar que tengamos el DNI del usuario
       if (!user?.dni) {
-        console.error('User DNI not found in session:', user);
-        setErrorMessage('Error de sesión. Usuario no identificado correctamente.');
+        console.error("User DNI not found in session:", user);
+        setErrorMessage(
+          "Error de sesión. Usuario no identificado correctamente."
+        );
         return;
       }
-
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setErrorMessage('Necesitamos su ubicación para registrar el problema');
-        return;
-      }
-
-      const location = await Location.getCurrentPositionAsync({
-        accuracy: Location.Accuracy.High
-      });
 
       const formData = new FormData();
-      formData.append('photo', {
+      formData.append("photo", {
         uri: photo.uri,
-        type: 'image/jpeg',
-        name: 'photo.jpg'
+        type: "image/jpeg",
+        name: "photo.jpg",
       } as any);
+      formData.append("title", title.trim());
+      formData.append("description", description.trim());
+      formData.append("latitude", location.coords.latitude.toString());
+      formData.append("longitude", location.coords.longitude.toString());
+      formData.append("categoryName", selectedCategory.name);
+      formData.append("userId", user.dni);
 
-      formData.append('title', title.trim());
-      formData.append('description', description.trim());
-      formData.append('latitude', location.coords.latitude.toString());
-      formData.append('longitude', location.coords.longitude.toString());
-      formData.append('categoryId', selectedCategory.id);
-      // Enviamos el DNI en lugar del ID
-      formData.append('userId', user.dni);
-
-      console.log('Sending complaint with data:', {
+      console.log("Sending complaint with data:", {
         userId: user.dni,
-        categoryId: selectedCategory.id,
+        categoryName: selectedCategory.name,
         title: title.trim(),
         hasPhoto: !!photo,
-        location: {
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude
-        }
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
       });
 
       const result = await complaintsApi.create(formData);
@@ -227,27 +247,27 @@ const TakeReportPage = () => {
       }
 
       Alert.alert(
-        '¡Reporte Enviado!',
-        'Gracias por ayudar a mejorar nuestra ciudad.',
+        "¡Reporte Enviado!",
+        "Gracias por ayudar a mejorar nuestra ciudad.",
         [
           {
-            text: 'OK',
+            text: "OK",
             onPress: () => {
               setPhoto(null);
-              setTitle('');
-              setDescription('');
+              setTitle("");
+              setDescription("");
               setSelectedCategory(null);
-              setErrorMessage('');
+              setErrorMessage("");
               setStep(1);
-            }
-          }
+            },
+          },
         ]
       );
-
     } catch (error) {
-      console.error('Error completo:', error);
+      console.error("Error completo:", error);
+      let errorMessage = "No se pudo enviar el reporte. ";
       setErrorMessage(
-        'No se pudo enviar el reporte. Por favor, verifique su conexión e intente nuevamente.'
+        errorMessage + "Por favor, verifique su conexión e intente nuevamente."
       );
     } finally {
       setIsSubmitting(false);
@@ -262,14 +282,17 @@ const TakeReportPage = () => {
           style={[
             styles.stepDot,
             step === stepNumber && styles.stepDotActive,
-            step > stepNumber && styles.stepDotCompleted
+            step > stepNumber && styles.stepDotCompleted,
           ]}
           onPress={() => setStep(stepNumber)}
         >
-          <Text style={[
-            styles.stepNumber,
-            (step === stepNumber || step > stepNumber) && styles.stepNumberActive
-          ]}>
+          <Text
+            style={[
+              styles.stepNumber,
+              (step === stepNumber || step > stepNumber) &&
+                styles.stepNumberActive,
+            ]}
+          >
             {stepNumber}
           </Text>
         </TouchableOpacity>
@@ -286,10 +309,11 @@ const TakeReportPage = () => {
             <View style={styles.categoriesGrid}>
               {CATEGORIES.map((category) => (
                 <TouchableOpacity
-                  key={category.id}
+                  key={category.name}
                   style={[
                     styles.categoryItem,
-                    selectedCategory?.id === category.id && styles.categoryItemSelected
+                    selectedCategory?.name === category.name &&
+                      styles.categoryItemSelected,
                   ]}
                   onPress={() => {
                     setSelectedCategory(category);
@@ -299,9 +323,20 @@ const TakeReportPage = () => {
                   <MaterialIcons
                     name={category.icon}
                     size={28}
-                    color={category.color}
+                    color={
+                      selectedCategory?.name === category.name
+                        ? COLORS.surface
+                        : category.color
+                    }
                   />
-                  <Text style={styles.categoryText}>
+                  <Text
+                    style={[
+                      styles.categoryText,
+                      selectedCategory?.name === category.name && {
+                        color: COLORS.surface,
+                      },
+                    ]}
+                  >
                     {category.name}
                   </Text>
                 </TouchableOpacity>
@@ -323,14 +358,22 @@ const TakeReportPage = () => {
                       style={styles.photoAction}
                       onPress={() => setPhoto(null)}
                     >
-                      <MaterialIcons name="delete" size={32} color={COLORS.error} />
+                      <MaterialIcons
+                        name="delete"
+                        size={32}
+                        color={COLORS.error}
+                      />
                       <Text style={styles.photoActionText}>Eliminar</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                       style={styles.photoAction}
                       onPress={takePhoto}
                     >
-                      <MaterialIcons name="photo-camera" size={32} color={COLORS.primary} />
+                      <MaterialIcons
+                        name="photo-camera"
+                        size={32}
+                        color={COLORS.primary}
+                      />
                       <Text style={styles.photoActionText}>Otra foto</Text>
                     </TouchableOpacity>
                   </View>
@@ -341,7 +384,11 @@ const TakeReportPage = () => {
                     style={styles.photoOptionButton}
                     onPress={takePhoto}
                   >
-                    <MaterialIcons name="photo-camera" size={48} color={COLORS.primary} />
+                    <MaterialIcons
+                      name="photo-camera"
+                      size={48}
+                      color={COLORS.primary}
+                    />
                     <Text style={styles.photoOptionText}>Tomar Foto</Text>
                   </TouchableOpacity>
 
@@ -351,7 +398,11 @@ const TakeReportPage = () => {
                     style={styles.photoOptionButton}
                     onPress={selectImage}
                   >
-                    <MaterialIcons name="photo-library" size={48} color={COLORS.primary} />
+                    <MaterialIcons
+                      name="photo-library"
+                      size={48}
+                      color={COLORS.primary}
+                    />
                     <Text style={styles.photoOptionText}>Galería</Text>
                   </TouchableOpacity>
                 </View>
@@ -363,7 +414,11 @@ const TakeReportPage = () => {
                 onPress={() => setStep(3)}
               >
                 <Text style={styles.nextButtonText}>Siguiente</Text>
-                <MaterialIcons name="arrow-forward" size={24} color={COLORS.surface} />
+                <MaterialIcons
+                  name="arrow-forward"
+                  size={24}
+                  color={COLORS.surface}
+                />
               </TouchableOpacity>
             )}
           </View>
@@ -405,7 +460,7 @@ const TakeReportPage = () => {
               <TouchableOpacity
                 style={[
                   styles.submitButton,
-                  (isSubmitting) && styles.submitButtonDisabled
+                  isSubmitting && styles.submitButtonDisabled,
                 ]}
                 onPress={handleSubmit}
                 disabled={isSubmitting}
@@ -414,7 +469,11 @@ const TakeReportPage = () => {
                   <ActivityIndicator size="large" color={COLORS.surface} />
                 ) : (
                   <>
-                    <MaterialIcons name="send" size={24} color={COLORS.surface} />
+                    <MaterialIcons
+                      name="send"
+                      size={24}
+                      color={COLORS.surface}
+                    />
                     <Text style={styles.submitButtonText}>Enviar Reporte</Text>
                   </>
                 )}
@@ -447,9 +506,9 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   stepIndicator: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
     marginBottom: 30,
   },
   stepDot: {
@@ -457,8 +516,8 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
     backgroundColor: COLORS.surface,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginHorizontal: 10,
     borderWidth: 2,
     borderColor: COLORS.disabled,
@@ -473,7 +532,7 @@ const styles = StyleSheet.create({
   },
   stepNumber: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: COLORS.disabled,
   },
   stepNumberActive: {
@@ -484,15 +543,15 @@ const styles = StyleSheet.create({
   },
   stepTitle: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: COLORS.text,
     marginBottom: 20,
-    textAlign: 'center',
+    textAlign: "center",
   },
   categoriesGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
     paddingHorizontal: 0,
     gap: 16,
   },
@@ -502,46 +561,36 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.surface,
     borderRadius: 12,
     padding: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     elevation: 2,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
-  },
-  categoryText: {
-    marginTop: 8,
-    fontSize: 16,
-    color: COLORS.text,
-    fontWeight: '500',
-    textAlign: 'center',
-  },
-  categoryItemSelected: {
-    backgroundColor: COLORS.primary,
   },
   photoSection: {
     marginBottom: 20,
   },
   photoContainer: {
     borderRadius: 15,
-    overflow: 'hidden',
+    overflow: "hidden",
     backgroundColor: COLORS.surface,
     elevation: 3,
   },
   photo: {
-    width: '100%',
+    width: "100%",
     height: 400,
     borderRadius: 15,
   },
   photoActions: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+    flexDirection: "row",
+    justifyContent: "space-around",
     padding: 15,
     backgroundColor: COLORS.surface,
   },
   photoAction: {
-    alignItems: 'center',
+    alignItems: "center",
   },
   photoActionText: {
     marginTop: 5,
@@ -553,31 +602,31 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     padding: 30,
     height: 400,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-around',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-around",
     elevation: 3,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
   },
   photoOptionButton: {
     flex: 1,
-    height: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
+    height: "100%",
+    alignItems: "center",
+    justifyContent: "center",
   },
   photoOptionDivider: {
     width: 2,
-    height: '80%',
+    height: "80%",
     backgroundColor: COLORS.disabled,
     marginHorizontal: 20,
   },
   photoOptionText: {
     marginTop: 15,
     fontSize: 18,
-    fontWeight: '500',
+    fontWeight: "500",
     color: COLORS.text,
   },
   inputsContainer: {
@@ -585,14 +634,14 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     padding: 20,
     elevation: 3,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
   },
   inputLabel: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
     color: COLORS.text,
     marginBottom: 10,
     marginTop: 10,
@@ -604,7 +653,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     fontSize: 18,
     color: COLORS.text,
-    fontFamily: 'Inter_Regular',
+    fontFamily: "Inter_Regular",
     borderWidth: 1,
     borderColor: COLORS.disabled,
     minHeight: 60,
@@ -616,8 +665,8 @@ const styles = StyleSheet.create({
   errorText: {
     color: COLORS.error,
     fontSize: 16,
-    fontFamily: 'Inter_Regular',
-    textAlign: 'center',
+    fontFamily: "Inter_Regular",
+    textAlign: "center",
     marginBottom: 15,
     paddingHorizontal: 20,
   },
@@ -625,12 +674,12 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.accent,
     padding: 20,
     borderRadius: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     marginTop: 10,
     elevation: 3,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
@@ -643,20 +692,20 @@ const styles = StyleSheet.create({
   submitButtonText: {
     color: COLORS.surface,
     fontSize: 20,
-    fontWeight: '600',
+    fontWeight: "600",
     marginLeft: 10,
-    fontFamily: 'Inter_SemiBold',
+    fontFamily: "Inter_SemiBold",
   },
   nextButton: {
     backgroundColor: COLORS.primary,
     padding: 20,
     borderRadius: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     marginTop: 20,
     elevation: 3,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
@@ -664,10 +713,24 @@ const styles = StyleSheet.create({
   nextButtonText: {
     color: COLORS.surface,
     fontSize: 20,
-    fontWeight: '600',
+    fontWeight: "600",
     marginRight: 10,
-    fontFamily: 'Inter_SemiBold',
-  }
+    fontFamily: "Inter_SemiBold",
+  },
+  categoryItemSelected: {
+    backgroundColor: COLORS.primary,
+    borderColor: COLORS.primary,
+  },
+  categoryText: {
+    marginTop: 8,
+    fontSize: 16,
+    color: COLORS.text,
+    fontWeight: "500",
+    textAlign: "center",
+  },
+  categoryTextSelected: {
+    color: COLORS.surface,
+  },
 });
 
 export default TakeReportPage;

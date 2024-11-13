@@ -11,7 +11,7 @@ export const CustomTabBarIcon = (name: keyof typeof Ionicons.glyphMap, middleBtn
       borderRadius: middleBtn ? 8 : 0,
       height: middleBtn ? 50 : 'auto',
     }}>
-      <Ionicons name={name} size={24} color={middleBtn ? Colors.white_00 :  color}/>
+      <Ionicons name={name} size={25} color={middleBtn ? Colors.white_00 :  color}/>
     </View>
   );
 };
