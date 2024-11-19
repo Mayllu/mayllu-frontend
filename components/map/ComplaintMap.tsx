@@ -101,10 +101,7 @@ export const ComplaintMap: React.FC<ComplaintMapInterfaceProps> = ({
 
   const handleMarkerPress = (group: LocationGroup) => {
     if (group.complaints.length === 1) {
-      router.push({
-        pathname: "/complaint/[id]",
-        params: { id: group.complaints[0].id },
-      });
+      router.push(`/complaint/${group.complaints[0]._id}`); // Corrección aquí
     } else {
       setSelectedGroup(group);
       setShowModal(true);
@@ -225,36 +222,62 @@ export const ComplaintMap: React.FC<ComplaintMapInterfaceProps> = ({
               </Text>
               <TouchableOpacity
                 onPress={() => setShowModal(false)}
-                style={styles.closeButton}
+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
               >
-                <MaterialIcons name="close" size={24} color={"#ff3030"} />
+                <MaterialIcons name="close" size={24} color={Colors.grey} />
               </TouchableOpacity>
             </View>
             <FlatList
               data={selectedGroup?.complaints}
               keyExtractor={(item) => item.id}
+              contentContainerStyle={styles.listContainer}
+              ItemSeparatorComponent={() => <View style={styles.separator} />}
               renderItem={({ item }) => (
                 <TouchableOpacity
                   style={styles.complaintItem}
                   onPress={() => {
                     setShowModal(false);
-                    router.push("complaint", { id: item._id });
+                    router.push(`/complaint/${item._id}`);
                   }}
                 >
-                  <View style={styles.complaintItemHeader}>
-                    <View
-                      style={[
-                        styles.categoryDot,
-                        { backgroundColor: item.category.color },
-                      ]}
+                  <View style={styles.complaintContent}>
+                    <View style={styles.complaintIconContainer}>
+                      <MaterialIcons
+                        name={(item.category.icon as any) || "warning"}
+                        size={24}
+                        color={item.category.color || Colors.blue_60}
+                      />
+                    </View>
+                    <View style={styles.complaintInfo}>
+                      <Text style={styles.complaintTitle} numberOfLines={1}>
+                        {item.title}
+                      </Text>
+                      <View style={styles.complaintMeta}>
+                        <MaterialIcons
+                          name="location-on"
+                          size={14}
+                          color={Colors.grey}
+                        />
+                        <Text style={styles.metaText}>
+                          {item.location || "San Isidro"}
+                        </Text>
+                        <View style={styles.timeMeta}>
+                          <MaterialIcons
+                            name="access-time"
+                            size={14}
+                            color={Colors.grey}
+                          />
+                          <Text style={styles.metaText}>Hace 3 días</Text>
+                        </View>
+                      </View>
+                    </View>
+                    <MaterialIcons
+                      name="chevron-right"
+                      size={24}
+                      color={Colors.grey}
+                      style={styles.chevron}
                     />
-                    <Text style={styles.complaintTitle}>{item.title}</Text>
                   </View>
-                  <MaterialIcons
-                    name="chevron-right"
-                    size={24}
-                    color={Colors.grey}
-                  />
                 </TouchableOpacity>
               )}
             />
@@ -266,6 +289,93 @@ export const ComplaintMap: React.FC<ComplaintMapInterfaceProps> = ({
 };
 
 const styles = StyleSheet.create({
+  modalContainer: {
+    flex: 1,
+    justifyContent: "flex-end",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
+    backgroundColor: Colors.white_00,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingTop: 20,
+    maxHeight: "80%",
+  },
+  modalHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingBottom: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.white_40,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: Colors.white_70,
+  },
+  listContainer: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  separator: {
+    height: 8,
+  },
+  complaintItem: {
+    backgroundColor: Colors.white,
+    borderRadius: 12,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+    marginVertical: 4,
+  },
+  complaintContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 12,
+  },
+  complaintIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: Colors.white_40,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 12,
+  },
+  complaintInfo: {
+    flex: 1,
+    marginRight: 8,
+  },
+  complaintTitle: {
+    fontSize: 16,
+    fontWeight: "500",
+    color: Colors.black,
+    marginBottom: 4,
+  },
+  complaintMeta: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  timeMeta: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginLeft: 12,
+  },
+  metaText: {
+    fontSize: 12,
+    color: Colors.grey,
+    marginLeft: 4,
+  },
+  chevron: {
+    marginLeft: 8,
+  },
   container: {
     height: "40%",
   },
@@ -338,39 +448,8 @@ const styles = StyleSheet.create({
     borderRightColor: "transparent",
     marginTop: -2,
   },
-  modalContainer: {
-    flex: 1,
-    justifyContent: "flex-end",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  modalContent: {
-    backgroundColor: Colors.white,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    padding: 16,
-    maxHeight: "70%",
-  },
-  modalHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 16,
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#000000",
-  },
   closeButton: {
     padding: 4,
-  },
-  complaintItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ff3030",
   },
   complaintItemHeader: {
     flexDirection: "row",
@@ -382,11 +461,6 @@ const styles = StyleSheet.create({
     height: 12,
     borderRadius: 6,
     marginRight: 8,
-  },
-  complaintTitle: {
-    fontSize: 16,
-    color: Colors.black,
-    flex: 1,
   },
   locationButton: {
     position: "absolute",
