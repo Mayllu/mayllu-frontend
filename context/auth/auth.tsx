@@ -1,7 +1,13 @@
-import { createContext, useContext, useState, useCallback, useEffect } from 'react';
-import { authApi } from '@/api/auth';
-import { authStorage } from '@/store';
-import { User, RegisterData, AuthResponse } from '@/types/auth';
+import {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useEffect,
+} from "react";
+import { authApi } from "@/api/auth";
+import { authStorage } from "@/store";
+import { User, RegisterData, AuthResponse } from "@/types/auth";
 
 type SessionContextValue = {
   session: boolean;
@@ -30,7 +36,7 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
         setSession(true);
       }
     } catch (error) {
-      console.error('Error checking session:', error);
+      console.error("Error checking session:", error);
       await authStorage.clearAuth();
     } finally {
       setIsLoading(false);
@@ -53,7 +59,7 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
       const response = await authApi.login({ email, password });
       await handleAuthSuccess(response);
     } catch (error) {
-      console.error('Sign in failed:', error);
+      console.error("Sign in failed:", error);
       throw error;
     }
   }, []);
@@ -63,7 +69,7 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
       const response = await authApi.register(data);
       await handleAuthSuccess(response);
     } catch (error) {
-      console.error('Sign up failed:', error);
+      console.error("Sign up failed:", error);
       throw error;
     }
   }, []);
@@ -75,7 +81,9 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <SessionContext.Provider value={{ session, isLoading, user, signIn, signUp, signOut }}>
+    <SessionContext.Provider
+      value={{ session, isLoading, user, signIn, signUp, signOut }}
+    >
       {children}
     </SessionContext.Provider>
   );
@@ -84,7 +92,7 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
 export function useSession() {
   const context = useContext(SessionContext);
   if (!context) {
-    throw new Error('useSession must be used within a SessionProvider');
+    throw new Error("useSession must be used within a SessionProvider");
   }
   return context;
 }

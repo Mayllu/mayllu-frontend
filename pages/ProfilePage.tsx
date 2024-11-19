@@ -1,15 +1,23 @@
-import React from 'react';
-import { StyleSheet, View, Text, Image, ScrollView, TouchableOpacity, Alert } from "react-native";
+import React from "react";
+import {
+  StyleSheet,
+  View,
+  Text,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+  Alert,
+} from "react-native";
 import { useHeaderHeight } from "@react-navigation/elements";
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "@/constants";
 import { CreatePageStyle } from "@/utils";
-import { useSession } from '@/context';
-import { useNavigation } from '@react-navigation/native';
+import { useSession } from "@/context";
+import { useNavigation } from "@react-navigation/native";
 
 const ProfileOption = ({ icon, text, color = Colors.white_60, onPress }) => (
   <TouchableOpacity style={styles.option} onPress={onPress}>
-    <View style={[styles.iconContainer, { backgroundColor: color + '20' }]}>
+    <View style={[styles.iconContainer, { backgroundColor: color + "20" }]}>
       <Ionicons name={icon} size={20} color={color} />
     </View>
     <Text style={styles.optionText}>{text}</Text>
@@ -33,115 +41,120 @@ const ProfilePage = () => {
   const navigation = useNavigation();
 
   const handleLogout = async () => {
-    Alert.alert(
-      "Cerrar Sesión",
-      "¿Estás seguro que deseas cerrar sesión?",
-      [
-        {
-          text: "Cancelar",
-          style: "cancel"
-        },
-        {
-          text: "Sí, cerrar sesión",
-          onPress: async () => {
-            try {
-              await signOut();
-              navigation.reset({
-                index: 0,
-                routes: [{ name: 'Auth' }],
-              });
-            } catch (error) {
-              Alert.alert("Error", "No se pudo cerrar sesión. Intente nuevamente.");
-            }
+    Alert.alert("Cerrar Sesión", "¿Estás seguro que deseas cerrar sesión?", [
+      {
+        text: "Cancelar",
+        style: "cancel",
+      },
+      {
+        text: "Sí, cerrar sesión",
+        onPress: async () => {
+          try {
+            await signOut();
+            navigation.reset({
+              index: 0,
+              routes: [{ name: "Auth" }],
+            });
+          } catch (error) {
+            Alert.alert(
+              "Error",
+              "No se pudo cerrar sesión. Intente nuevamente.",
+            );
           }
-        }
-      ]
-    );
+        },
+      },
+    ]);
   };
 
   const profileSections = [
     {
       title: "Ajustes",
       options: [
-        { 
-          icon: "person", 
+        {
+          icon: "person",
           text: "Editar Perfil",
-          onPress: () => navigation.navigate('EditProfile')
+          onPress: () => navigation.navigate("EditProfile"),
         },
-        { 
-          icon: "notifications", 
+        {
+          icon: "notifications",
           text: "Notificaciones",
-          onPress: () => navigation.navigate('Notifications')
+          onPress: () => navigation.navigate("Notifications"),
         },
-        { 
-          icon: "lock-closed", 
+        {
+          icon: "lock-closed",
           text: "Privacidad y Seguridad",
-          onPress: () => navigation.navigate('Privacy')
+          onPress: () => navigation.navigate("Privacy"),
         },
-      ]
+      ],
     },
     {
       title: "Preferencias",
       options: [
-        { 
-          icon: "moon", 
+        {
+          icon: "moon",
           text: "Modo Oscuro",
-          onPress: () => navigation.navigate('DarkMode')
+          onPress: () => navigation.navigate("DarkMode"),
         },
-        { 
-          icon: "language", 
+        {
+          icon: "language",
           text: "Idioma",
-          onPress: () => navigation.navigate('Language')
+          onPress: () => navigation.navigate("Language"),
         },
-        { 
-          icon: "color-palette", 
+        {
+          icon: "color-palette",
           text: "Tema",
-          onPress: () => navigation.navigate('Theme')
+          onPress: () => navigation.navigate("Theme"),
         },
-      ]
+      ],
     },
     {
       title: "Ayuda y Soporte",
       options: [
-        { 
-          icon: "information-circle", 
+        {
+          icon: "information-circle",
           text: "Acerca de",
-          onPress: () => navigation.navigate('About')
+          onPress: () => navigation.navigate("About"),
         },
-        { 
-          icon: "help-circle", 
+        {
+          icon: "help-circle",
           text: "Centro de Ayuda",
-          onPress: () => navigation.navigate('Help')
+          onPress: () => navigation.navigate("Help"),
         },
-        { 
-          icon: "mail", 
+        {
+          icon: "mail",
           text: "Contáctanos",
-          onPress: () => navigation.navigate('Contact')
+          onPress: () => navigation.navigate("Contact"),
         },
-      ]
+      ],
     },
     {
       title: "Sesión",
       options: [
-        { 
-          icon: "log-out", 
-          text: "Cerrar Sesión", 
+        {
+          icon: "log-out",
+          text: "Cerrar Sesión",
           color: Colors.red_60,
-          onPress: handleLogout
+          onPress: handleLogout,
         },
-      ]
-    }
+      ],
+    },
   ];
 
   return (
-    <ScrollView style={[pageStyle.container, styles.scrollView]} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+    <ScrollView
+      style={[pageStyle.container, styles.scrollView]}
+      contentContainerStyle={styles.scrollContent}
+      showsVerticalScrollIndicator={false}
+    >
       <View style={styles.header}>
-        <Image 
-          source={{ uri: "https://avatars.githubusercontent.com/u/118573214?v=4" }} 
-          style={styles.avatar} 
+        <Image
+          source={{
+            uri: "https://avatars.githubusercontent.com/u/118573214?v=4",
+          }}
+          style={styles.avatar}
         />
         <View style={styles.userData}>
-          <Text style={styles.name}>{user?.name || 'Usuario'}</Text>
+          <Text style={styles.name}>{user?.name || "Usuario"}</Text>
           <Text style={styles.email}>{user?.email}</Text>
           <View style={styles.badge}>
             <Text style={styles.badgeText}>Usuario Verificado</Text>
@@ -211,12 +224,12 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   badge: {
-    backgroundColor: Colors.blue_60 + '20',
+    backgroundColor: Colors.blue_60 + "20",
     marginTop: 10,
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 4,
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start",
   },
   badgeText: {
     color: Colors.blue_60,

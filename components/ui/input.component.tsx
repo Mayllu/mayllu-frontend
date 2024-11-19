@@ -1,22 +1,22 @@
 // components/ui/Input.tsx
-import { TextInput, View, Text, StyleSheet, Pressable } from 'react-native';
-import { Colors } from '@/constants';
-import { Eye, EyeOff } from 'lucide-react-native';
-import { useState } from 'react';
+import { TextInput, View, Text, StyleSheet, Pressable } from "react-native";
+import { Colors } from "@/constants";
+import { Eye, EyeOff } from "lucide-react-native";
+import { useState } from "react";
 
 type InputProps = {
   label: string;
   error?: string;
   icon?: React.ReactNode;
   secureTextEntry?: boolean;
-} & Omit<React.ComponentProps<typeof TextInput>, 'secureTextEntry'>;
+} & Omit<React.ComponentProps<typeof TextInput>, "secureTextEntry">;
 
-export const Input = ({ 
-  label, 
-  error, 
-  icon, 
-  secureTextEntry = false, 
-  ...props 
+export const Input = ({
+  label,
+  error,
+  icon,
+  secureTextEntry = false,
+  ...props
 }: InputProps) => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -41,10 +41,11 @@ export const Input = ({
             style={styles.iconRight}
             onPress={() => setShowPassword(!showPassword)}
           >
-            {showPassword ? 
-              <EyeOff size={20} color={Colors.white_40} /> :
+            {showPassword ? (
+              <EyeOff size={20} color={Colors.white_40} />
+            ) : (
               <Eye size={20} color={Colors.white_40} />
-            }
+            )}
           </Pressable>
         )}
       </View>
@@ -61,10 +62,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginBottom: 8,
     color: Colors.white_70,
-    fontFamily: 'Inter_Regular',
+    fontFamily: "Inter_Regular",
   },
   inputContainer: {
-    position: 'relative',
+    position: "relative",
   },
   input: {
     borderWidth: 1,
@@ -75,7 +76,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     color: Colors.white_90,
     fontSize: 16,
-    fontFamily: 'Inter_Regular',
+    fontFamily: "Inter_Regular",
   },
   inputError: {
     borderWidth: 1,
@@ -85,20 +86,20 @@ const styles = StyleSheet.create({
     color: Colors.red_40,
     fontSize: 12,
     marginTop: 4,
-    fontFamily: 'Inter_Regular',
+    fontFamily: "Inter_Regular",
   },
   iconLeft: {
-    position: 'absolute',
+    position: "absolute",
     left: 16,
-    top: '50%',
+    top: "50%",
     transform: [{ translateY: -10 }],
     zIndex: 1,
     color: Colors.blue_60,
   },
   iconRight: {
-    position: 'absolute',
+    position: "absolute",
     right: 16,
-    top: '50%',
+    top: "50%",
     transform: [{ translateY: -10 }],
     zIndex: 1,
   },

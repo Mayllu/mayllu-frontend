@@ -56,7 +56,7 @@ const SAMPLE_COMMENTS = [
 const ComplaintDetailPage = () => {
   const { id } = useLocalSearchParams();
   const [complaint, setComplaint] = useState<ComplaintPointInterface | null>(
-    null
+    null,
   );
   const [loading, setLoading] = useState(true);
   const [newComment, setNewComment] = useState("");

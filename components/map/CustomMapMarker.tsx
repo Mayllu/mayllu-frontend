@@ -1,8 +1,8 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Marker } from 'react-native-maps';
-import { router } from 'expo-router';
-import { Colors } from '@/constants';
+import React from "react";
+import { View, StyleSheet } from "react-native";
+import { Marker } from "react-native-maps";
+import { router } from "expo-router";
+import { Colors } from "@/constants";
 
 interface CustomMapMarkerProps {
   id: string;
@@ -17,12 +17,12 @@ export const CustomMapMarker: React.FC<CustomMapMarkerProps> = ({
   latitude,
   longitude,
   title,
-  description
+  description,
 }) => {
   const handlePress = () => {
     router.push({
       pathname: "/complaint/[id]",
-      params: { id }
+      params: { id },
     });
   };
 
@@ -30,7 +30,7 @@ export const CustomMapMarker: React.FC<CustomMapMarkerProps> = ({
     <Marker
       coordinate={{
         latitude,
-        longitude
+        longitude,
       }}
       onPress={handlePress}
       title={title}
@@ -45,7 +45,7 @@ export const CustomMapMarker: React.FC<CustomMapMarkerProps> = ({
 
 const styles = StyleSheet.create({
   markerContainer: {
-    alignItems: 'center',
+    alignItems: "center",
   },
   marker: {
     width: 24,
@@ -54,5 +54,5 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white_00,
     borderWidth: 3,
     borderColor: Colors.red_60,
-  }
+  },
 });

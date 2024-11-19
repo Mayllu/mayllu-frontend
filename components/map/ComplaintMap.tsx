@@ -31,10 +31,10 @@ export const ComplaintMap: React.FC<ComplaintMapInterfaceProps> = ({
 }) => {
   const mapRef = useRef<MapView>(null);
   const [groupedComplaints, setGroupedComplaints] = useState<LocationGroup[]>(
-    []
+    [],
   );
   const [selectedGroup, setSelectedGroup] = useState<LocationGroup | null>(
-    null
+    null,
   );
   const [showModal, setShowModal] = useState(false);
 
@@ -90,7 +90,7 @@ export const ComplaintMap: React.FC<ComplaintMapInterfaceProps> = ({
           latitudeDelta: 0.0,
           longitudeDelta: 0.006,
         },
-        1000
+        1000,
       );
     }
   }, [origin]);
@@ -192,7 +192,7 @@ export const ComplaintMap: React.FC<ComplaintMapInterfaceProps> = ({
                   latitudeDelta: 0.01,
                   longitudeDelta: 0.01,
                 },
-                1000
+                1000,
               );
             }
           }}

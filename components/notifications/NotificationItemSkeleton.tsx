@@ -1,6 +1,6 @@
-import { Colors } from '@/constants';
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { Colors } from "@/constants";
+import React from "react";
+import { View, StyleSheet } from "react-native";
 
 export const NotificationSkeletonItem = () => (
   <View style={styles.skeletonItem}>
@@ -15,7 +15,7 @@ export const NotificationSkeletonItem = () => (
 
 const styles = StyleSheet.create({
   skeletonItem: {
-    flexDirection: 'row',
+    flexDirection: "row",
     paddingVertical: 16,
     marginBottom: 10,
   },
@@ -37,8 +37,8 @@ const styles = StyleSheet.create({
   },
   skeletonLineTime: {
     height: 12,
-    alignSelf: 'flex-end',
-    width: '20%',
+    alignSelf: "flex-end",
+    width: "20%",
     backgroundColor: Colors.white_20,
   },
 });

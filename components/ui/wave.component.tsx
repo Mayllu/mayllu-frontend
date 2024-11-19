@@ -1,13 +1,20 @@
-import { View, StyleSheet } from 'react-native';
-import Svg, { Defs, LinearGradient, Stop, Path, G, Rect } from 'react-native-svg';
-import { Colors } from '@/constants';
+import { View, StyleSheet } from "react-native";
+import Svg, {
+  Defs,
+  LinearGradient,
+  Stop,
+  Path,
+  G,
+  Rect,
+} from "react-native-svg";
+import { Colors } from "@/constants";
 
 export const WaveBackground = () => {
   return (
-    <View style={{ position: 'absolute', width: '100%', height: '100%' }}>
+    <View style={{ position: "absolute", width: "100%", height: "100%" }}>
       {/* Gradiente de fondo base */}
-      <View style={{ position: 'absolute', width: '100%', height: '100%' }}>
-        <Svg height="100%" width="100%" style={{ position: 'absolute' }}>
+      <View style={{ position: "absolute", width: "100%", height: "100%" }}>
+        <Svg height="100%" width="100%" style={{ position: "absolute" }}>
           <Defs>
             <LinearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
               <Stop offset="0" stopColor={Colors.white_10} stopOpacity="1" />
@@ -15,7 +22,7 @@ export const WaveBackground = () => {
             </LinearGradient>
           </Defs>
           <Rect x="0" y="0" width="100%" height="100%" fill="url(#grad)" />
-          
+
           {/* Patrón geométrico */}
           <G opacity="0.05">
             {/* Líneas diagonales */}
@@ -24,7 +31,7 @@ export const WaveBackground = () => {
               stroke={Colors.blue_60}
               strokeWidth="0.5"
             />
-            
+
             {/* Puntos decorativos */}
             <G fill={Colors.white_80}>
               <Circle cx="50" cy="50" r="2" />
@@ -39,7 +46,7 @@ export const WaveBackground = () => {
 
       {/* Overlay con efecto de profundidad */}
       <Svg
-        style={{ position: 'absolute', bottom: 0 }}
+        style={{ position: "absolute", bottom: 0 }}
         width="100%"
         height="60%"
         preserveAspectRatio="none"
@@ -85,16 +92,16 @@ export const WaveBackground = () => {
 
 const styles = StyleSheet.create({
   designElements: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
+    position: "absolute",
+    width: "100%",
+    height: "100%",
   },
 });
 
 // Componente auxiliar para los círculos
 const Circle = ({ cx, cy, r, ...props }: any) => (
   <Path
-    d={`M${cx-r},${cy} a${r},${r} 0 1,0 ${r*2},0 a${r},${r} 0 1,0 -${r*2},0`}
+    d={`M${cx - r},${cy} a${r},${r} 0 1,0 ${r * 2},0 a${r},${r} 0 1,0 -${r * 2},0`}
     {...props}
   />
 );

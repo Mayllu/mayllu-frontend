@@ -15,7 +15,7 @@ export const Colors = {
   // Grises modernos
   white_00: "#FFFFFF",
   white_10: "#F9FAFB",
-  white_20: "#F3F4F6", 
+  white_20: "#F3F4F6",
   white_30: "#E5E7EB",
   white_40: "#D1D5DB",
   white_50: "#9CA3AF",

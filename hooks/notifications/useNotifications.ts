@@ -3,14 +3,19 @@ import { fetchNotifications } from "@/api/notifications";
 import { NotificationItemInterface } from "@/types";
 
 export const useNotifications = () => {
-  const [notifications, setNotifications] = useState<NotificationItemInterface[]>([]);
+  const [notifications, setNotifications] = useState<
+    NotificationItemInterface[]
+  >([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const loadNotifications = async () => {
       try {
         const data = await fetchNotifications();
-        if (Array.isArray(data) && data.every(item => isNotificationItem(item))) {
+        if (
+          Array.isArray(data) &&
+          data.every((item) => isNotificationItem(item))
+        ) {
           setNotifications(data);
         } else {
           console.error("Received invalid data format from fetchNotifications");
@@ -31,12 +36,12 @@ export const useNotifications = () => {
 
 function isNotificationItem(item: any): item is NotificationItemInterface {
   return (
-    typeof item === 'object' &&
-      item !== null &&
-      'id' in item &&
-      'title' in item &&
-      'description' in item &&
-      'status' in item &&
-      'createdAt' in item
+    typeof item === "object" &&
+    item !== null &&
+    "id" in item &&
+    "title" in item &&
+    "description" in item &&
+    "status" in item &&
+    "createdAt" in item
   );
-};
+}

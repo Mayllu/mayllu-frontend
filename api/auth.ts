@@ -64,7 +64,7 @@ export const authApi = {
       if (!response.ok) {
         throw new Error(
           responseData.message ||
-            `Error al iniciar sesión: ${response.statusText}`
+            `Error al iniciar sesión: ${response.statusText}`,
         );
       }
 
@@ -99,7 +99,7 @@ export const authApi = {
 
       if (!response.ok) {
         throw new Error(
-          responseData.message || `Token inválido: ${response.statusText}`
+          responseData.message || `Token inválido: ${response.statusText}`,
         );
       }
 

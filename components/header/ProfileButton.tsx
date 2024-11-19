@@ -1,29 +1,29 @@
-import React from 'react';
-import { Image, TouchableOpacity, StyleSheet } from 'react-native';
-import { useRouter, usePathname } from 'expo-router';
-import { Colors } from '@/constants';
+import React from "react";
+import { Image, TouchableOpacity, StyleSheet } from "react-native";
+import { useRouter, usePathname } from "expo-router";
+import { Colors } from "@/constants";
 
 const ProfileAvatar = () => (
   <Image
-    source={{ uri: 'https://avatars.githubusercontent.com/u/118573214?v=4' }}
+    source={{ uri: "https://avatars.githubusercontent.com/u/118573214?v=4" }}
     style={styles.avatar}
   />
 );
 
-
 export const ProfileButton = () => {
   const router = useRouter();
   const pathname = usePathname();
-  
-  const isProfilePath = pathname === '/profile' || pathname.startsWith('/profile/');
+
+  const isProfilePath =
+    pathname === "/profile" || pathname.startsWith("/profile/");
 
   const handlePress = () => {
-    if (!isProfilePath) router.push('/profile');
+    if (!isProfilePath) router.push("/profile");
   };
 
   return (
     <TouchableOpacity style={styles.button} onPress={handlePress}>
-      {isProfilePath ? null : (<ProfileAvatar />)}
+      {isProfilePath ? null : <ProfileAvatar />}
     </TouchableOpacity>
   );
 };
