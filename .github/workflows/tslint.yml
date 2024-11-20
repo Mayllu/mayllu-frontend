@@ -13,8 +13,8 @@ jobs:
     name: Run linters
     runs-on: ubuntu-latest
     permissions:
-      contents: read  # Permisos para leer el contenido del repositorio
-      checks: write    # Permisos para crear y actualizar checks
+      contents: read # Permisos para leer el contenido del repositorio
+      checks: write # Permisos para crear y actualizar checks
 
     steps:
       - name: Check out Git repository
