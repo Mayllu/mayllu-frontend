@@ -5,4 +5,4 @@ export interface NotificationItemInterface {
   status: string;
   category?: string;
   createdAt: string;
-};
+}

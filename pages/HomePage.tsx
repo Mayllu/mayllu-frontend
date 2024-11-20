@@ -62,7 +62,7 @@ const HomePage = () => {
       };
 
       updateLocation();
-    }, [])
+    }, []),
   );
 
   return (

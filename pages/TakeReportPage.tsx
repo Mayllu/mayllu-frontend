@@ -112,7 +112,7 @@ const TakeReportPage = () => {
           (newLocation) => {
             setLocation(newLocation);
             setLocationError("");
-          }
+          },
         );
 
         return () => {
@@ -214,7 +214,7 @@ const TakeReportPage = () => {
       if (!user?.dni) {
         console.error("User DNI not found in session:", user);
         setErrorMessage(
-          "Error de sesión. Usuario no identificado correctamente."
+          "Error de sesión. Usuario no identificado correctamente.",
         );
         return;
       }
@@ -262,13 +262,13 @@ const TakeReportPage = () => {
               setStep(1);
             },
           },
-        ]
+        ],
       );
     } catch (error) {
       console.error("Error completo:", error);
       let errorMessage = "No se pudo enviar el reporte. ";
       setErrorMessage(
-        errorMessage + "Por favor, verifique su conexión e intente nuevamente."
+        errorMessage + "Por favor, verifique su conexión e intente nuevamente.",
       );
     } finally {
       setIsSubmitting(false);

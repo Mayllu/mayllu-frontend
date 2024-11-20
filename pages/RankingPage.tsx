@@ -129,7 +129,7 @@ const RankingPage = () => {
     } catch (error) {
       console.error("Error fetching leaderboard:", error);
       setError(
-        error instanceof Error ? error.message : "Error al cargar el ranking"
+        error instanceof Error ? error.message : "Error al cargar el ranking",
       );
     } finally {
       setLoading(false);
@@ -192,7 +192,7 @@ const RankingPage = () => {
       }
       onScroll={Animated.event(
         [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-        { useNativeDriver: true }
+        { useNativeDriver: true },
       )}
     >
       <Animated.View style={[styles.header, { opacity: headerOpacity }]}>
